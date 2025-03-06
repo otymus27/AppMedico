@@ -1,0 +1,38 @@
+.titulo2{
+     padding-top: 2rem;
+
+     size: 30px;
+}
+
+.div_textos{
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+}
+
+.texto_grande, .texto_vermelho{
+     font-size: 300px;
+     color: var(--red);
+     font-weight: bold;
+}
+
+.texto_vermelho {
+     font-size: 2rem ;     
+}
+
+h1{
+     color: black;
+}
+
+.caixa1{
+     background-color: brown;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+
+}
+
+.caixa2{
+     background-color: rgb(65, 42, 165);
+}

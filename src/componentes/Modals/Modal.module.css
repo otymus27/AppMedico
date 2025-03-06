@@ -1,0 +1,93 @@
+.background{
+     position: fixed;
+     top: 0;
+     bottom: 0;
+     left: 0;
+     right: 0;
+     background-color: rgba(0, 0, 0, 0.624);
+}
+
+.modal{   
+     display: flex;
+     flex-direction: column;
+     gap: 15px;
+     justify-content: center;
+     align-items: center;   
+     background-color: rgb(236, 226, 226);
+     color: black;
+     padding: 4rem;
+     border-radius: 10px;    
+}
+
+.botao{
+     display: flex;
+     flex-direction: row;  
+     justify-content: center;
+     gap: 10px;
+
+     & button {
+          border-radius: 10px;
+          background-color: #8e8ae1;
+          height: 40px;
+          border: none;
+          font-weight: bold;
+          color: #fff;
+          font-size: 18px;
+        }
+      
+        & button:hover{
+          opacity: 0.8;
+        }
+     
+}
+
+.form {
+     display: flex;
+     flex-direction: column;
+     gap: 10px;
+     padding: 30px;
+     border-radius: 10px;
+     background-color: #2e2d4e;
+     max-width: 100%;
+     width: 500px;
+     margin-bottom: 0px;
+   
+     & button {
+       border-radius: 10px;
+       background-color: #8e8ae1;
+       height: 40px;
+       border: none;
+       font-weight: bold;
+       color: #fff;
+       font-size: 18px;
+     }
+   
+     & button:hover{
+       opacity: 0.8;
+     }
+   
+     & input {
+       border: 1px solid #48456c;
+       border-radius: 30px;
+       height: 40px;
+       background-color: #363653;
+       color: #fff;
+       font-size: 16px;
+       padding-left: 10px;
+       outline: none;
+   
+     }
+   
+   }
+
+   input{
+    border: 1px solid #48456c;
+       border-radius: 30px;
+       height: 40px;
+       width: 100%;
+       background-color: #363653;
+       color: #fff;
+       font-size: 16px;
+       padding-left: 10px;
+       outline: none;
+   }

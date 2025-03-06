@@ -1,0 +1,48 @@
+/* CSS da pagina home */
+.home {
+     width: 100%;
+     min-height: 100vh;
+     display: flex;
+     justify-content: space-around;
+     align-items: center;  
+     
+     background-color: blueviolet;
+
+}
+
+.home img {
+     height: 500px;
+}
+
+.home p {
+     font-size: 3rem;
+     font-weight: bold;
+     margin-bottom: 1rem;
+
+     & span {
+          color: var(--red);          
+     }
+}
+
+.btn {
+     width: 250px;
+     height: 50px;
+     font-size: 1.125rem;
+     font-weight: bold;
+     border: 0;
+     border-radius: 8px;
+     cursor: pointer;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     text-decoration: none;
+}
+
+.btn_red{
+     background-color: var(--red);
+     color: var(--white);
+}
+
+.btn_red:hover {
+     background-color: var(--primary);
+}

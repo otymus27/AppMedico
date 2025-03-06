@@ -1,0 +1,13 @@
+.container {
+     width: 850px;
+     height: 450px;
+     background: rgba(255, 255, 255, 0.15);
+     backdrop-filter: blur(10px);
+     border: 2px solid rgba(180, 23, 23, 0.2);
+     border-radius: 10px;
+     padding: 40px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+   }
+   
