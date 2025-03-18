@@ -1,21 +1,29 @@
 import axios from 'axios';
+import Cookies from "js-cookie";
 
 
-//função para facilitar a conexão com o backend da aplicação
+/// Função para facilitar a conexão com o backend da aplicação
 const api = axios.create({
-    baseURL: 'http://localhost:3001',
-    // headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': sessionStorage.getItem("token") || ''
-    //   },
-})
+  baseURL: 'http://localhost:3001',
+  headers: {
+      'Content-Type': 'application/json',
+      // 'Authorization': localStorage.getItem("token") || ''
+  },
+});
 
-api.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  });
+//Interceptor para adicionar o token a cada requisição
+api.interceptors.request.use(
+  (config) => {
+      const token = Cookies.get("token");
+      if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+  },
+  (error) => {
+      console.error("Erro na requisição:", error);
+      return Promise.reject(error);
+  }
+);
 
 export default api;

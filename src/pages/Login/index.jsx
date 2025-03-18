@@ -1,9 +1,12 @@
 "use client"; // Necessário para rodar em Client Component
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { FaUser, FaLock } from "react-icons/fa"; // Icones importados da biblioteca material UI
 import style from "../Login/Login.module.css";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api.js";
+import Cookies from "js-cookie";
+import { AuthContext } from "../../Context/AuthContext.jsx";
+
 
 function LoginTeste() {
     const navigate = useNavigate();
@@ -11,24 +14,27 @@ function LoginTeste() {
     const [senha, setSenha] = useState("");
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-
+    
     const autenticacao = async (e) => {
         e.preventDefault();
         setError(null);
 
         if (!login.trim() || !senha.trim()) {
-            setError("Preencha todos os campos.");
+            setError("Preencha todos os campos.");           
             return;
         }
 
         setLoading(true);
 
         try {
-            const response = await api.post("/login", { login, senha });
+            const response = await api.post("/login", { login, senha });  
+            //console.log(nome)  
+            console.log(response.data)        
 
-            if (response.data.token) {
-                sessionStorage.setItem("token", response.data.token);
-                console.log(response.data.token)
+            if (response.data) {
+
+                Cookies.set("token", response.data,{expires:1});
+                console.log(response.data)
                 navigate("/home"); // Redireciona após login
             } else {
                 setError("Erro ao autenticar. Verifique suas credenciais.");

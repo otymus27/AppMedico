@@ -22,7 +22,7 @@ function ListarMedicos() {
    
     const carregarMedicos = async () => {
         try {
-            const response = await api.get("http://localhost:3001/medico");
+            const response = await api.get("http://localhost:3001/medicos");
             setMedicos(response.data);
         } catch (error) {
             console.error("Erro ao buscar os dados:", error);

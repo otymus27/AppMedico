@@ -30,7 +30,7 @@ useEffect(() => {
 const getMedicos = async (id)=>{
     //console.log(id)
     try {
-        const response = await api.get(`http://localhost:3001/medico/${id}`);
+        const response = await api.get(`http://localhost:3001/medicos/${id}`);
         console.log(response)
         setMedico(response.data);               
     } catch (error) {
@@ -51,7 +51,7 @@ const getMedicos = async (id)=>{
 
         // Fazer a requisição para o servidor utilizando axios, indicando o método da requisição, o endereço, enviar os dados do formulário e o cabeçalho
         await api
-            .put(`http://localhost:3001/medico/${registro}`,medico)
+            .patch(`http://localhost:3001/medicos/${registro}`,medico)
             .then((response) => {
                 // Acessa o then quando a API retornar status 200                
                 alert("Registro atualizado com sucesso!");                

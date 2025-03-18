@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "../../componentes/Footer/index.jsx";
 import Header from "../../componentes/Header/index.jsx";
 import Container from "../../componentes/Container/index.jsx";
@@ -20,6 +21,7 @@ function Home({}) {
               <span>
                 Fabio Rocha <br />
               </span>
+            
               Dev Full Stack
             </p>
 

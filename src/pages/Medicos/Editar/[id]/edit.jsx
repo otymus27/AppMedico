@@ -21,7 +21,7 @@ const EditPage = () => {
     const getMedicos = async ()=>{
         setIsLoading(true);
         try {
-            const response = await api.get(`http://localhost:3001/medico/${id}`);
+            const response = await api.get(`http://localhost:3001/medicos/${id}`);
             console.log(response)
             setMedico({
                 nome: response.data.nome,
