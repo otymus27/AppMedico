@@ -17,15 +17,7 @@ function LoginTeste() {
     
     const autenticacao = async (e) => {
         e.preventDefault();
-        setError(null);
-
-        if (!login.trim() || !senha.trim()) {
-            setError("Preencha todos os campos.");           
-            return;
-        }
-
-        setLoading(true);
-
+         
         try {
             const response = await api.post("/login", { login, senha });  
             //console.log(nome)  
