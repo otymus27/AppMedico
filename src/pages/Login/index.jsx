@@ -12,8 +12,8 @@ function LoginTeste() {
     const navigate = useNavigate();
     const [login, setLogin] = useState("");
     const [senha, setSenha] = useState("");
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+  
+   
     
     const autenticacao = async (e) => {
         e.preventDefault();
@@ -29,13 +29,11 @@ function LoginTeste() {
                 console.log(response.data)
                 navigate("/home"); // Redireciona após login
             } else {
-                setError("Erro ao autenticar. Verifique suas credenciais.");
+                console.log("Erro ao autenticar. Verifique suas credenciais.");
             }
         } catch (err) {
-            setError(err.response?.data?.error || "Erro de conexão. Tente novamente.");
-        } finally {
-            setLoading(false);
-        }
+            console.log(err.response?.data?.error || "Erro de conexão. Tente novamente.");
+        } 
     };
 
     return (

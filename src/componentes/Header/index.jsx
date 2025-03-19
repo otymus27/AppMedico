@@ -1,18 +1,22 @@
 import style from "./Header.module.css";
 import {Link} from 'react-router-dom';
 import Cookies from "js-cookie";
-// import { useContext } from "react";
+import { AuthContext } from "../../Context/AuthContext";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 // import { MedicoContext } from "./../../Context/MedicoContext.jsx";
 
 function Header() {
-  // const { medico, setMedico } = useContext(MedicoContext);
+   // Aqui recebemos variaveis e funções vindas do AuthContext, que podem ser usadas em qualquer componente
+   const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  // Função para fazer logout
-  function logout() {
-    Cookies.remove("token");
-    //setMedico(undefined);
-    navigate("/");
-  }
+  // // Função para fazer logout
+  // function sair() {
+  //   Cookies.remove("token");
+  //   setMedico(undefined);
+  //   navigate("/login");
+  // }
 
   return (
     <>

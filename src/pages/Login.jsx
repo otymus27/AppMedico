@@ -2,16 +2,21 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../Context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 
+
 function Login() {
-    const { autenticar } = useContext(AuthContext);
+    // Aqui recebemos variaveis e funções vindas do AuthContext, que podem ser usadas em qualquer componente
+    const { autenticar,logar } = useContext(AuthContext);
+
     const [login, setLogin] = useState("");
     const [senha, setSenha] = useState("");
+
     const navigate = useNavigate();
 
     //Função para logar
     const handleLogin = () => {
           // Simulação de login
-          const userData = { login, token: "12345" };
+          // Aqui passamos os parametros necessários para função de autenticação
+          const userData = { login, token: "12345",nome:"fabio" };
 
           // Puxando a função do AuthContext, função essa que posso puxar de qualquer componente, pois trata do hook useContext
           autenticar(userData);
@@ -24,6 +29,16 @@ function Login() {
           }
         
     };
+
+
+
+    //Função para logar
+    const entrar = async () => {
+        // Puxando a função do AuthContext, função essa que posso puxar de qualquer componente, pois trata do hook useContext
+        const credenciais = await logar(login, senha);     
+      
+    };
+
 
     return (
         <div>
@@ -41,6 +56,7 @@ function Login() {
                 onChange={(e) => setSenha(e.target.value)}
             />
             <button onClick={handleLogin}>Entrar</button>
+            <button onClick={entrar}>Login com banco</button>
         </div>
     );
 }
