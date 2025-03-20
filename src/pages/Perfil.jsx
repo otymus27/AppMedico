@@ -10,18 +10,20 @@ function Perfil() {
     const { user, logout } = useContext(AuthContext);
     const id = user.id;
 
-    const [usuario, setUsuario] = useState({});
-      
-    
+    // Verificação para garantir que o usuário está carregado
+     if (!user) {
+        navigate("/login");
+        return null;
+    }
+
+    const [usuario, setUsuario] = useState({}); 
 
     // Função para buscar dados do usuario logado
-    async function buscarUsuarioLogado() {
-    
+    async function buscarUsuarioLogado() {    
       try {
             const response = await userLogged(id);           
             console.log(response);
-            setUsuario(response); 
-                        
+            setUsuario(response);                         
                        
       } catch (error) {
             console.log(error);
@@ -33,9 +35,6 @@ function Perfil() {
         if(Cookies.get('token'))
         buscarUsuarioLogado();
     }, []);
-
-
-  
 
     return (
         <div>

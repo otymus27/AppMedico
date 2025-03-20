@@ -2,27 +2,49 @@ import style from "./Header.module.css";
 import {Link} from 'react-router-dom';
 import Cookies from "js-cookie";
 import { AuthContext } from "../../Context/AuthContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { userLogged } from "../../services/medicoService";
 // import { MedicoContext } from "./../../Context/MedicoContext.jsx";
 
 function Header() {
    // Aqui recebemos variaveis e funções vindas do AuthContext, que podem ser usadas em qualquer componente
    const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
+   const id = user.id;
+   console.log(id);
+   const navigate = useNavigate();
 
-  // // Função para fazer logout
-  // function sair() {
-  //   Cookies.remove("token");
-  //   setMedico(undefined);
-  //   navigate("/login");
-  // }
+    if (!user) {
+        return <navigate to="/login" />;
+    }
+
+
+   const [usuario, setUsuario] = useState({}); 
+
+    // Função para buscar dados do usuario logado
+    async function buscarUsuarioLogado() {    
+      try {
+            const response = await userLogged(id);           
+            console.log(response);
+            setUsuario(response);                         
+                       
+      } catch (error) {
+            console.log(error);
+      }
+    
+    }
+
+    useEffect(() => {
+        if(Cookies.get('token'))
+        buscarUsuarioLogado();
+    }, []);
+
 
   return (
     <>
       <header className={style.header}>
         <Link to="/">
-          <span>Otymus.dev</span>
+          <span>{usuario.nome}</span>
         </Link>
        
 

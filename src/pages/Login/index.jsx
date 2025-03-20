@@ -9,6 +9,8 @@ import { AuthContext } from "../../Context/AuthContext.jsx";
 
 
 function LoginTeste() {
+    // Aqui recebemos variaveis e funções vindas do AuthContext, que podem ser usadas em qualquer componente
+    const { logar } = useContext(AuthContext);
     const navigate = useNavigate();
     const [login, setLogin] = useState("");
     const [senha, setSenha] = useState("");
@@ -36,10 +38,22 @@ function LoginTeste() {
         } 
     };
 
+
+
+    //Função para logar, está puxando a função logar do useContext, no caso AuthContext.jsx
+    const entrar = async (e) => {
+        e.preventDefault();
+        // Puxando a função do AuthContext, função essa que posso puxar de qualquer componente, pois trata do hook useContext
+        const credenciais = await logar(login, senha);     
+      
+    };
+
+
+
     return (
         <>
             <div className={style.container}>
-                <form className={style.formulario} onSubmit={autenticacao}>
+                <form className={style.formulario} onSubmit={entrar}>
                     <h1>Acesse o sistema</h1>
                     <div className={style.inputfield}>
                         <input
@@ -73,7 +87,7 @@ function LoginTeste() {
                     </div>
 
                     <button type="submit">Entrar</button>
-
+                   
                     <div className={style.registro}>
                         <p>
                             Não tem uma conta? <a href="#">Registrar</a>
