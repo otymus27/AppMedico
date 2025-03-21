@@ -12,11 +12,13 @@ function EditModal({ isOpen, setOpen,registro, atualizarLista}) {
    // Declarar uma nova variável dados com state e atribuir o objeto
    const [medico, setMedico] = useState({        
     nome: "",
-    login: "",
-    senha: "",
+    login: "",    
     especialidade: "",
     crm: "",
 }); 
+
+const [senha, setSenha] = useState(""); // Estado separado para a senha
+
 
 // Buscar dados do médico sempre que o modal for aberto com um novo registro
 useEffect(() => {
@@ -32,7 +34,8 @@ const getMedicos = async (id)=>{
     try {
         const response = await api.get(`http://localhost:3001/medicos/${id}`);
         console.log(response)
-        setMedico(response.data);               
+        const { nome, login, especialidade, crm } = response.data;
+        setMedico({ nome, login, especialidade, crm }); // Não incluir a senha aqui          
     } catch (error) {
         console.error("Erro ao buscar os dados:", error);
     }   
@@ -40,7 +43,14 @@ const getMedicos = async (id)=>{
    
     // Atualiza os valores conforme o usuário digita
     const handleInputChange = (e) => {
-        setMedico({ ...medico, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+
+        // Se o campo for "senha", atualiza o estado separado
+        if (name === "senha") {
+            setSenha(value);
+        } else {
+            setMedico({ ...medico, [name]: value });
+        }
     };
   
 
@@ -49,13 +59,21 @@ const getMedicos = async (id)=>{
         // Bloquear o recarregamento da página
         e.preventDefault();       
 
+        // Criar um objeto de atualização sem a senha inicialmente
+        const dadosAtualizados = { ...medico };
+
+        // Incluir a senha apenas se ela foi alterada
+        if (senha) {
+            dadosAtualizados.senha = senha;
+        }
+
         // Fazer a requisição para o servidor utilizando axios, indicando o método da requisição, o endereço, enviar os dados do formulário e o cabeçalho
         await api
-            .patch(`http://localhost:3001/medicos/${registro}`,medico)
+            .patch(`http://localhost:3001/medicos/${registro}`,dadosAtualizados)
             .then((response) => {
                 // Acessa o then quando a API retornar status 200                
                 alert("Registro atualizado com sucesso!");                
-                setOpen(false); // Fecha o odal após salvar
+                setOpen(false); // Fecha o modal após salvar
                 atualizarLista(); // Props vinda da pagina Listar para atualizar a lista automaticamente
             })
             .catch((error) => {
@@ -90,9 +108,9 @@ const getMedicos = async (id)=>{
                             <input
                                 type="password"
                                 name="senha"
-                                placeholder="Digite a senha"
+                                value={senha}
                                 onChange={handleInputChange}
-                                value={medico.senha || ""}
+                                placeholder="Senha (deixe em branco para não alterar)"
                             />
                             <input
                                 type="text"
