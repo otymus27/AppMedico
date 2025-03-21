@@ -4,9 +4,7 @@ import { useState, useRef } from "react";
 import api from "../../../services/api.js";
 
 function ModalCadastrar({ isOpen, setOpen, atualizarLista }) {
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-
+  
     // Declarar uma nova variável dados com state e atribuir o objeto
     const [data, setData] = useState({
         nome: "",
@@ -25,41 +23,37 @@ function ModalCadastrar({ isOpen, setOpen, atualizarLista }) {
 
     // Executar a função quando o usuário clicar no botão do formulário
     const createUsuario = async (e) => {
-        // Bloquear o recarregamento da página
-        e.preventDefault();
+        e.preventDefault(); // Bloquear o recarregamento da página
 
-        // Fazer a requisição para o servidor utilizando axios, indicando o método da requisição, o endereço, enviar os dados do formulário e o cabeçalho
-        await api
-            .post("http://localhost:3001/medicos", data)
-            .then((response) => {
-                // Acessa o then quando a API retornar status 200                
-                alert("Registro adicionado com sucesso!");   
-                atualizarLista(); // Props vinda da pagina Listar para atualizar a lista automaticamente             
-                setOpen(false); // Fecha o modal após salvar
-                
+        // Verificar se todos os campos obrigatórios estão preenchidos
+        if (!data.nome || !data.login || !data.senha || !data.especialidade || !data.crm) {
+            setMessage("Todos os campos são obrigatórios!");
+            return; // Impede o envio da requisição para o backend
+        }
 
-                // Limpar os dados do state e os dados dos campos do formulário
-                setData({
-                    nome: "",
-                    login: "",
-                    senha: "",
-                    especialidade: "",
-                    crm: "",
-                });
-            })
-            .catch((err) => {
-                // Acessa o catch quando a API retornar erro
+        try {
+            await api.post("/medicos/", data);
+            alert("Registro adicionado com sucesso!");
+            atualizarLista(); // Atualiza a lista automaticamente
+            setOpen(false); // Fecha o modal após salvar
 
-                // Atribuir a mensagem no state message
-                console.log(err.response.data.mensagem);
-                if (err.response) {
-                    setMessage(err.response.data.mensagem);
-                } else {
-                    setMessage(
-                        "Erro: Tente novamente mais tarde ou entre contato com ...!"
-                    );
-                }
+            // Limpar os dados do state e os campos do formulário
+            setData({
+                nome: "",
+                login: "",
+                senha: "",
+                especialidade: "",
+                crm: "",
             });
+
+            // Limpar a mensagem de erro
+            setMessage("");
+            setOpen(false); // Fecha o modal após o sucesso
+        } catch (err) {
+            const mensagemErro = err.response?.data?.mensagem || "Erro: Tente novamente mais tarde!";
+            console.error("Erro ao cadastrar:", mensagemErro);
+            setMessage(mensagemErro);
+        }
     };
 
     if (!isOpen) return null; // Se o modal não estiver aberto, não renderiza nada
@@ -70,6 +64,7 @@ function ModalCadastrar({ isOpen, setOpen, atualizarLista }) {
                     <div className={style.modal}>
                         <h2>Cadastro de médicos</h2>
 
+                        {message && <p style={{ color: "red", marginBottom: "10px" }}>{message}</p>}    
                         <form className={style.form} onSubmit={createUsuario}>
                             <input
                                 type="text"
@@ -109,23 +104,20 @@ function ModalCadastrar({ isOpen, setOpen, atualizarLista }) {
                             <div className={style.botao}>
                                 <Button
                                     variant="secondary"
-                                    onClick={() => setOpen(!isOpen)}
+                                    onClick={() => setOpen(false)}
                                 >
                                     Fechar
                                 </Button>
                                 
                                 <Button
                                     type="submit"
-                                    variant="primary"
-                                    onClick={(e) => {
-                                        createUsuario(e);
-                                        setOpen(false);
-                                    }}
+                                    variant="primary"                                    
                                 >
                                     Cadastrar
                                 </Button>
                             </div>
                         </form>
+                       
                     </div>
                 </div>
             </>

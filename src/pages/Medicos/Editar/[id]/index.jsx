@@ -69,7 +69,7 @@ const getMedicos = async (id)=>{
 
         // Fazer a requisição para o servidor utilizando axios, indicando o método da requisição, o endereço, enviar os dados do formulário e o cabeçalho
         await api
-            .patch(`http://localhost:3001/medicos/${registro}`,dadosAtualizados)
+            .patch(`/medicos/${registro}`,dadosAtualizados)
             .then((response) => {
                 // Acessa o then quando a API retornar status 200                
                 alert("Registro atualizado com sucesso!");                

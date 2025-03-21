@@ -33,7 +33,7 @@ function LoginTeste() {
             } else {
                 console.log("Erro ao autenticar. Verifique suas credenciais.");
             }
-        } catch (err) {
+        } catch (error) {
             console.log(err.response?.data?.error || "Erro de conexão. Tente novamente.");
         } 
     };
