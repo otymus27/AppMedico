@@ -10,6 +10,8 @@ import Edit from "./pages/Medicos/Editar/[id]/edit.jsx"
 import Pacientes from "./pages/Pacientes/Listar"
 import Logar from "./pages/Login.jsx";
 import Perfil from "./pages/Perfil.jsx";
+import ErrorBoundary from "./componentes/ComponenteErro.jsx";
+
 
 
 function AppRoutes(){
@@ -20,6 +22,7 @@ function AppRoutes(){
                     {/* Rotas de testes de autentica com useContext */}
                     <Route path="/login" element={<Logar/>}></Route>
                     <Route path="/perfil" element={<Perfil/>}></Route>
+                    <Route path="/errorBoundary" element={<ErrorBoundary/>}></Route>
 
 
                     <Route path="/" element={<Login/>}></Route>

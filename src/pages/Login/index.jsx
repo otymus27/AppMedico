@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../services/api.js";
 import Cookies from "js-cookie";
 import { AuthContext } from "../../Context/AuthContext.jsx";
+import ErrorBoundary from "../../componentes/ErrorBoundary/index.jsx";
 
 
 function LoginTeste() {
@@ -14,87 +15,60 @@ function LoginTeste() {
     const navigate = useNavigate();
     const [login, setLogin] = useState("");
     const [senha, setSenha] = useState("");
-  
-   
-    
-    const autenticacao = async (e) => {
-        e.preventDefault();
-         
-        try {
-            const response = await api.post("/login", { login, senha });  
-            //console.log(nome)  
-            console.log(response.data)        
-
-            if (response.data) {
-
-                Cookies.set("token", response.data,{expires:1});
-                console.log(response.data)
-                navigate("/home"); // Redireciona após login
-            } else {
-                console.log("Erro ao autenticar. Verifique suas credenciais.");
-            }
-        } catch (error) {
-            console.log(err.response?.data?.error || "Erro de conexão. Tente novamente.");
-        } 
-    };
-
-
+       
 
     //Função para logar, está puxando a função logar do useContext, no caso AuthContext.jsx
     const entrar = async (e) => {
         e.preventDefault();
-        // Puxando a função do AuthContext, função essa que posso puxar de qualquer componente, pois trata do hook useContext
-        const credenciais = await logar(login, senha);     
-      
+        try {
+            await logar(login, senha);  // Tenta logar o usuário
+            navigate("/home");          // Redireciona se o login for bem-sucedido
+        } catch (error) {
+            console.error("Erro ao autenticar:", error);
+            // Talvez exibir uma mensagem de erro para o usuário
+        }
     };
 
 
 
     return (
         <>
-            <div className={style.container}>
-                <form className={style.formulario} onSubmit={entrar}>
-                    <h1>Acesse o sistema</h1>
-                    <div className={style.inputfield}>
-                        <input
-                            type="text"
-                            name="login"
-                            value={login}
-                            onChange={(e) => setLogin(e.target.value)}
-                            placeholder="Informe o login"
-                            required
-                        />
-                        <FaUser className={style.icon} />
-                    </div>
-                    <div className={style.inputfield}>
-                        <input
-                            type="password"
-                            name="senha"
-                            value={senha}
-                            onChange={(e) => setSenha(e.target.value)}
-                            placeholder="Informe a senha"
-                            required
-                        />
-                        <FaLock className={style.icon} />
-                    </div>
-
-                    <div className={style.labels}>
-                        <label>
-                            <input type="checkbox" />
-                            Lembre de mim
-                        </label>
-                        <a href="#">Esqueceu a senha?</a>
-                    </div>
-
-                    <button type="submit">Entrar</button>
-                   
-                    <div className={style.registro}>
-                        <p>
-                            Não tem uma conta? <a href="#">Registrar</a>
-                        </p>
-                    </div>
-                </form>
-            </div>
+            {/* ErrorBoundary -serve para capturar qualquer erro de renderização de componentes */}
+                      
+                <div className={style.container}>
+                    <form className={style.formulario} onSubmit={entrar}>
+                        <h1>Acesse o sistema</h1>
+                        
+                        <div className={style.inputfield}>
+                            <input
+                                type="text"
+                                name="login"
+                                value={login}
+                                onChange={(e) => setLogin(e.target.value)}
+                                placeholder="Informe o login"
+                                required
+                            />
+                            <FaUser className={style.icon} />
+                        </div>
+                       
+                        
+                        <div className={style.inputfield}>                      
+                            <input
+                                type="password"
+                                name="senha"
+                                value={senha}
+                                onChange={(e) => setSenha(e.target.value)}
+                                placeholder="Informe a senha"
+                                required
+                            />                     
+                            <FaLock className={style.icon} />
+                        </div>
+                           
+                        <button type="submit">Entrar</button>                  
+                        
+                    </form>
+                </div>
+           
         </>
     );
 }

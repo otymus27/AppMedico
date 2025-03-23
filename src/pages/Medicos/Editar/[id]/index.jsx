@@ -19,6 +19,9 @@ function EditModal({ isOpen, setOpen,registro, atualizarLista}) {
 
 const [senha, setSenha] = useState(""); // Estado separado para a senha
 
+// Declarar a variável para receber a mensagem de erro            
+const [erro, setErro] = useState("");
+
 
 // Buscar dados do médico sempre que o modal for aberto com um novo registro
 useEffect(() => {
@@ -58,6 +61,13 @@ const getMedicos = async (id)=>{
     const updateMedico = async (e) => {
         // Bloquear o recarregamento da página
         e.preventDefault();       
+        setErro(""); // Limpa o erro antes de tentar novamente
+
+        // Verificar campos obrigatórios
+        if (!medico.nome || !medico.login || !medico.especialidade || !medico.crm) {
+            setErro("Todos os campos obrigatórios devem ser preenchidos.");
+            return;
+        }
 
         // Criar um objeto de atualização sem a senha inicialmente
         const dadosAtualizados = { ...medico };
@@ -67,20 +77,29 @@ const getMedicos = async (id)=>{
             dadosAtualizados.senha = senha;
         }
 
-        // Fazer a requisição para o servidor utilizando axios, indicando o método da requisição, o endereço, enviar os dados do formulário e o cabeçalho
-        await api
-            .patch(`/medicos/${registro}`,dadosAtualizados)
-            .then((response) => {
-                // Acessa o then quando a API retornar status 200                
-                alert("Registro atualizado com sucesso!");                
-                setOpen(false); // Fecha o modal após salvar
-                atualizarLista(); // Props vinda da pagina Listar para atualizar a lista automaticamente
-            })
-            .catch((error) => {
-                // Acessa o catch quando a API retornar erro
-                console.error("Erro ao atualizar:", error);
-                alert("Erro ao atualizar o médico. Tente novamente.");                
-            });
+        try {
+            // Fazer a requisição para o servidor utilizando axios, indicando o método da requisição, o endereço, enviar os dados do formulário e o cabeçalho
+            await api.patch(`/medicos/${registro}`,dadosAtualizados)
+            alert("Registro atualizado com sucesso!");  
+            atualizarLista(); // Props vinda da pagina Listar para atualizar a lista automaticamente    
+            // Limpar a mensagem de erro
+            setErro("");    
+            setOpen(false); // Fecha o modal após salvar              
+        } catch (error) {
+            console.error("Erro na atualização:", error); // Verificar no console
+
+            // Verificando se o erro tem uma resposta (caso do Axios)
+            if (error.response) {
+                const mensagemErro = error.response.data?.message || "Erro ao atualizar o usuário.";
+                console.log("Mensagem de erro capturada:", mensagemErro); // Verificar no console
+                setErro(mensagemErro);
+            } else if (error.message) {
+                setErro(error.message);
+            } else {
+                setErro("Erro desconhecido. Tente novamente.");
+            }
+        }
+       
     };
 
     if (!isOpen) return null;
@@ -89,6 +108,8 @@ const getMedicos = async (id)=>{
                 <div className={style.background}>
                     <div className={style.modal}>
                         <h2>Editar médicos</h2>
+
+                        {erro && <p style={{ color: "red" }}>{erro}</p>}  
 
                         <form className={style.form} onSubmit={updateMedico}>
                             <input
@@ -127,23 +148,9 @@ const getMedicos = async (id)=>{
                                 value={medico.crm || ""}
                             />
                             <div className={style.botao}>
-                                <Button
-                                    variant="secondary"
-                                    onClick={() => setOpen(!isOpen)}
-                                >
-                                    Fechar
-                                </Button>
+                                <Button variant="secondary" onClick={() => setOpen(!isOpen)}>Fechar</Button>
 
-                                <Button
-                                    type="submit"
-                                    variant="primary"
-                                    onClick={(e) => {
-                                        updateMedico(e);
-                                        setOpen(false);
-                                    }}
-                                >
-                                    Atualizar
-                                </Button>
+                                <Button type="submit" variant="primary" > Atualizar </Button>
                             </div>
                         </form>
                     </div>

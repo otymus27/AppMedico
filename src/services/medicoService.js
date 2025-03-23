@@ -15,7 +15,7 @@ export async function userLogged(id) {
                     Authorization: `Bearer ${Cookies.get("token")}`,
                },
           });
-          console.log(response.data.token);
+          
           return response.data;
      } catch (error) {
           console.error("Erro ao obter usuário autenticado:", error.response?.data || error.message);

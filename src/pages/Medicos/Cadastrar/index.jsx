@@ -14,8 +14,8 @@ function ModalCadastrar({ isOpen, setOpen, atualizarLista }) {
         crm: "",
     });
 
-    // Declarar a variável para receber a mensagem
-    const [message, setMessage] = useState("");
+    // Declarar a variável para receber a mensagem de erro            
+    const [erro, setErro] = useState("");
 
     // Receber os dados dos campos do formulário
     const valueInput = (e) =>
@@ -24,10 +24,12 @@ function ModalCadastrar({ isOpen, setOpen, atualizarLista }) {
     // Executar a função quando o usuário clicar no botão do formulário
     const createUsuario = async (e) => {
         e.preventDefault(); // Bloquear o recarregamento da página
+        setErro(""); // Limpa o erro antes de tentar novamente
+        
 
         // Verificar se todos os campos obrigatórios estão preenchidos
         if (!data.nome || !data.login || !data.senha || !data.especialidade || !data.crm) {
-            setMessage("Todos os campos são obrigatórios!");
+            setErro("Todos os campos são obrigatórios!");
             return; // Impede o envio da requisição para o backend
         }
 
@@ -47,12 +49,14 @@ function ModalCadastrar({ isOpen, setOpen, atualizarLista }) {
             });
 
             // Limpar a mensagem de erro
-            setMessage("");
+            setErro("");
             setOpen(false); // Fecha o modal após o sucesso
-        } catch (err) {
-            const mensagemErro = err.response?.data?.mensagem || "Erro: Tente novamente mais tarde!";
-            console.error("Erro ao cadastrar:", mensagemErro);
-            setMessage(mensagemErro);
+        } catch (error) {
+            if (error.response && error.response.status === 409) {
+                setErro(error.response.data.message);
+            } else {
+                setErro("Erro ao cadastrar usuário. Tente novamente.");
+            }
         }
     };
 
@@ -64,7 +68,7 @@ function ModalCadastrar({ isOpen, setOpen, atualizarLista }) {
                     <div className={style.modal}>
                         <h2>Cadastro de médicos</h2>
 
-                        {message && <p style={{ color: "red", marginBottom: "10px" }}>{message}</p>}    
+                        {erro && <p style={{ color: "red" }}>{erro}</p>}   
                         <form className={style.form} onSubmit={createUsuario}>
                             <input
                                 type="text"

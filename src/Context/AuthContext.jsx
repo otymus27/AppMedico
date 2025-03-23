@@ -12,16 +12,6 @@ export function AuthProvider({ children }) {
     const navigate = useNavigate(); // Criando o hook para navegação
     const [loading, setLoading] = useState(true); // Adicionando estado de carregamento
     
-
-    // Carregar usuário do armazenamento ao iniciar
-    useEffect(() => {
-        const storedUser = Cookies.get("user");
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
-
-
     // Verificar a presença do token ao carregar a aplicação
     useEffect(() => {
         const token = Cookies.get("token");
@@ -42,13 +32,6 @@ export function AuthProvider({ children }) {
         setLoading(false); // Carregamento finalizado
     }, []);
 
-    // Função para fazer login, o parametro desta função está vindo de outro componente, no caso Login.jsx
-    const autenticar = (userData) => {
-        setUser(userData);
-        Cookies.set("user", JSON.stringify(userData), { expires: 1 });
-        console.log(userData)
-        
-    };
 
     // Funçao para logar puxando dados do banco
     const logar = async (login, senha) => {
@@ -57,15 +40,12 @@ export function AuthProvider({ children }) {
             const response = await api.post("/login", { login, senha });   
       
             if (response.data && response.data.token) {
-                Cookies.set("token", response.data.token,{expires:1});
-                console.log(response.data)
+                Cookies.set("token", response.data.token,{expires:1});               
                 // Decodificar e armazenar os dados do token
-                const decoded = jwtDecode(response.data.token);
-                //console.log("Dados do token decodificados:", decoded);
+                const decoded = jwtDecode(response.data.token);                
                 setUser(decoded);
                 setMedico(response.data.token)
-                alert("Login realizado com sucesso!");
-                navigate("/home"); // Redireciona após login
+                alert("Login realizado com sucesso!");                
             } else {
                 console.log("Erro ao autenticar. Verifique suas credenciais.");
             }
@@ -86,7 +66,7 @@ export function AuthProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, autenticar, logout, logar }}>
+        <AuthContext.Provider value={{ user, logout, logar }}>
             {children}
         </AuthContext.Provider>
     );

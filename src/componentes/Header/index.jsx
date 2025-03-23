@@ -43,18 +43,18 @@ function Header() {
   return (
     <>
       <header className={style.header}>
-        <Link to="/">
+        <Link to="/home">
           <span>{usuario.nome}</span>
         </Link>
        
 
         <nav>
-        <i className="bi bi-box-arrow-right" onClick={logout}></i>
+       
           <Link to="/home">Home</Link>
           <Link to="/medicos">Medicos</Link>
           <Link to="/consultas">Consultas</Link>
-          <Link to="/pacientes">Pacientes</Link>
-          <Link to="/">Sair</Link>
+          <Link to="/pacientes">Pacientes</Link>          
+          <i className="bi bi-box-arrow-right" onClick={logout}></i>
         </nav>
       </header>
     </>
