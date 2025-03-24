@@ -1,0 +1,113 @@
+.tableContainer {
+  margin: 0 auto;
+  padding: 20px;
+  background-color: rgb(211, 208, 208);
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.tableRow {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.tableHeader {
+  background: linear-gradient(135deg, #007bff, #6610f2);
+  color: white;
+  font-weight: bold;  
+}
+
+.tableRow:hover {
+  background-color: #f1f5f9;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.tableActions button {
+  margin: 2px;
+  padding: 2px 6px;  /* Menor espaçamento */
+  border-radius: 4px;  /* Bordas mais discretas */
+  font-size: 0.8rem;   /* Tamanho da fonte menor */
+  transition: transform 0.2s;
+}
+
+.tableActions button:hover {
+  transform: translateY(-1px);
+}
+
+.tableActions i {
+  font-size: 2rem;  /* Aumentando o tamanho dos ícones */
+  margin: 0 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;  /* Efeito suave ao passar o mouse */
+}
+
+.tableActions i:hover {
+  transform: scale(1.1);  /* Efeito de aumento */
+}
+
+.btnCadastrar {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;   /* Botão de cadastro também menor */
+  border-radius: 4px;
+  margin-bottom: 12px;
+  transition: background-color 0.3s ease;
+  font-size: 0.9rem;   /* Tamanho da fonte menor */
+}
+
+.btnCadastrar:hover {
+  background-color: #0056b3;
+}
+
+.btnDanger,
+.btnSecondary {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;  /* Centraliza a navegação */
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  margin: 0 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.pagination span {
+  font-size: 1rem;
+  margin: 0 10px;
+}
+
+.teste{
+  display: flex;
+  justify-content: center;  /* Centraliza a navegação */
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+}

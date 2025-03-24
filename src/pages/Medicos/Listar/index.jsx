@@ -9,6 +9,9 @@ import ModalCadastro from "../../../pages/Medicos/Cadastrar/index.jsx";
 import EditModal from "../Editar/[id]/index.jsx";
 import ExcluirModal from "../../Medicos/Excluir/ExcluirModal.jsx";
 import "bootstrap/dist/css/bootstrap.min.css"; // Importar estilos do Bootstrap
+//import style from '../Listar/Listar.module.css';
+import styles from "../../Medicos/Listar/ListarMedico.module.css";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";  // Importando os ícones
 
 function ListarMedicos() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,20 +22,55 @@ function ListarMedicos() {
     const [open, setOpen] = useState(false);
     const [medicos, setMedicos] = useState([]);
 
+    //variaveis para paginação
+    const [paginaAtual, setPaginaAtual] = useState(1);
+    const [totalPaginas, setTotalPaginas] = useState(1);
+    const [itensPorPagina] = useState(5); // Número de itens por página
+
+    //Armazenar estado de erro
+    const [erro, setErro] = useState("");
+
    
-    const carregarMedicos = async () => {
+    const carregarMedicos = async (pagina=1)=>{
         try {
-            const response = await api.get("http://localhost:3001/medicos");
-            setMedicos(response.data);
+            const response = await api.get(`/medicos?page=${pagina}&limit=${itensPorPagina}`);
+            console.log("Dados retornados:", response.data); // Verifique aqui
+             // Verificar se o retorno da API é um array ou um objeto
+            if (Array.isArray(response.data)) {
+                setMedicos(response.data); // API retorna diretamente uma lista
+            } else if (Array.isArray(response.data.medicos)) {
+                setMedicos(response.data.medicos); // API retorna um objeto com uma lista de médicos
+                setTotalPaginas(Math.ceil(response.data.total / itensPorPagina));
+            } else {
+                console.error("Formato inesperado:", response.data);
+                setMedicos([]);
+            }
         } catch (error) {
-            console.error("Erro ao buscar os dados:", error);
+            console.error("Erro ao carregar médicos:", error);
+            setErro("Erro ao carregar os médicos.");
         }
     };
 
+     // Efeito para carregar os médicos quando a página inicial for montada
     useEffect(() => {
-        carregarMedicos();
-    }, []);
+        carregarMedicos(paginaAtual);
+    }, [paginaAtual]);
 
+    // Função para ir para a página anterior
+    const paginaAnterior = () => {
+        if (paginaAtual > 1) {
+            setPaginaAtual(paginaAtual - 1);
+        }
+    };
+
+    // Função para ir para a próxima página
+    const proximaPagina = () => {
+        if (paginaAtual < totalPaginas) {
+            setPaginaAtual(paginaAtual + 1);
+        }
+    };
+
+    // Abre modal de edição
     const abrirModalEdicao = (medicoId) => {        
         setRegistroSelecionado(medicoId);
         setIsModalOpen(true);
@@ -54,22 +92,18 @@ function ListarMedicos() {
         <>
             <Header />
             <Container>
-                <div className="container">
+                <div className={styles.tableContainer}>
                     <h1>Listar Médicos</h1>
                     
-                    <button
-                        onClick={() => setOpen(!open)}
-                        className="btn btn-primary"
-                    >
-                        Cadastrar
-                    </button>
+                    <button onClick={() => setOpen(!open)} className="btn btn-primary"> Cadastrar </button>
 
                      {/* Modal de Adição */}
                     <ModalCadastro isOpen={open} setOpen={setOpen} atualizarLista={carregarMedicos}/>
 
+                    {/* Tabela Responsiva */}                    
                     <Table striped bordered hover>
                         <thead>
-                            <tr>
+                            <tr className={styles.tableHeader}>
                                 <th>Id</th>
                                 <th>Nome</th>
                                 <th>Login</th>
@@ -80,37 +114,53 @@ function ListarMedicos() {
                             </tr>
                         </thead>
                         <tbody>
-                            {medicos.map((medico) => (
-                                <tr key={medico._id}>
+                            {(medicos || []).map((medico) => (
+                                <tr key={medico._id} className={styles.tableRow}>
                                     <td>{medico._id}</td>
-                                    <td className="text-center">{medico.nome}</td>
-                                    <td className="text-center">{medico.login}</td>
-                                    <td className="text-center">{medico.senha}</td>
-                                    <td className="text-center">{medico.especialidade}</td>
-                                    <td className="text-center">{medico.crm}</td>
-                                    <td className="text-center">
-                                        {/* Excluir via Modal */}
-                                        <button
-                                            // onClick={() => abrirModalExclusao(medico._id,medico.nome)}
+                                    <td>{medico.nome}</td>
+                                    <td>{medico.login}</td>
+                                    <td>{medico.senha}</td>
+                                    <td>{medico.especialidade}</td>
+                                    <td>{medico.crm}</td>
+                                    <td className={styles.tableActions}>
+                                        {/* Ícone de Excluir por modal*/}
+                                        <i
                                             onClick={() => abrirModalExclusao(medico._id, medico.nome)}
-                                            className="btn btn-danger"
+                                            className="text-danger"
+                                            title="Excluir"
                                         >
-                                            Excluir
-                                        </button>                                       
+                                            <FaTrashAlt />
+                                        </i>                                  
 
-                                        {/* Editar via Modal */}
-                                        <button
+                                        {/* Ícone de Editar por modal */}
+                                        <i
                                             onClick={() => abrirModalEdicao(medico._id, medico.nome)}
-                                            className="btn btn-secondary"
+                                            className="text-secondary"
+                                            title="Editar"
                                         >
-                                            Editar 
-                                        </button>
+                                            <FaEdit />
+                                        </i>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
-                    </Table>
+                    </Table>                   
+
+                    {/* Navegação de Paginação */}
+                    <div className={styles.pagination}>
+                        <button onClick={paginaAnterior} disabled={paginaAtual === 1}>
+                            ⬅️ Anterior
+                        </button>
+                        <span>
+                            Página {paginaAtual} de {totalPaginas}
+                        </span>
+                        <button onClick={proximaPagina} disabled={paginaAtual === totalPaginas}>
+                            Próxima ➡️
+                        </button>
+                    </div>
+
                 </div>
+
             </Container>
             <Footer />
 
