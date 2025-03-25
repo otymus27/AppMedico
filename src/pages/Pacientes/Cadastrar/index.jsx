@@ -11,44 +11,48 @@ const AdicionarModal = ({ show, handleClose, atualizarLista }) => {
         telefone: "",
     });
 
+    // Declarar a variável para receber a mensagem de erro            
+    const [erro, setErro] = useState("");
+
     // Receber os dados dos campos do formulário
     const valueInput = (e) =>
         setDados({ ...dados, [e.target.name]: e.target.value });
 
-    // Executar a função quando o usuário clicar no botão do formulário
+    // Função para cadastrar registro no banco de dados
     const cadastrar = async (e) => {
-        // Bloquear o recarregamento da página
-        e.preventDefault();
+        e.preventDefault(); // Bloquear o recarregamento da página
+        setErro(""); // Limpa o erro antes de tentar novamente
+        
 
-        // Fazer a requisição para o servidor utilizando axios, indicando o método da requisição, o endereço, enviar os dados do formulário e o cabeçalho
-        await api
-            .post("http://localhost:3001/pacientes", dados)
-            .then((response) => {
-                // Acessa o then quando a API retornar status 200
-                alert("Registro adicionado com sucesso!");
-                atualizarLista(); // Props vinda da pagina Listar para atualizar a lista automaticamente
-                setOpen(false); // Fecha o modal após salvar
+        // Verificar se todos os campos obrigatórios estão preenchidos
+        if (!dados.nome || !dados.email || !dados.telefone ) {
+            setErro("Todos os campos são obrigatórios!");
+            return; // Impede o envio da requisição para o backend
+        }
 
-                // Limpar os dados do state e os dados dos campos do formulário
-                setDados({
-                    nome: "",
-                    email: "",
-                    telefone: "",
-                });
-            })
-            .catch((err) => {
-                // Acessa o catch quando a API retornar erro
+        try {
+            await api.post("/pacientes/", dados);
+            alert("Registro adicionado com sucesso!");
+            atualizarLista(); // Atualiza a lista automaticamente
+            setOpen(false); // Fecha o modal após salvar
 
-                // Atribuir a mensagem no state message
-                console.log(err.response.data.mensagem);
-                if (err.response) {
-                    setMessage(err.response.data.mensagem);
-                } else {
-                    setMessage(
-                        "Erro: Tente novamente mais tarde ou entre contato com ...!"
-                    );
-                }
+            // Limpar os dados do state e os campos do formulário
+            setData({
+                nome: "",
+                email: "",
+                telefone: "",                
             });
+
+            // Limpar a mensagem de erro
+            setErro("");
+            setOpen(false); // Fecha o modal após o sucesso
+        } catch (error) {
+            if (error.response && error.response.status === 409) {
+                setErro(error.response.data.message);
+            } else {
+                setErro("Erro ao cadastrar registro. Tente novamente.");
+            }
+        }
     };
 
     return (

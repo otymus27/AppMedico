@@ -8,7 +8,7 @@ const ExcluirModal = ({show, handleClose, item, nome, atualizarLista,}) => {
         // Bloquear o recarregamento da página
         e.preventDefault();
         try {
-            await api.delete(`http://localhost:3001/paciente/${item}`);
+            await api.delete(`/pacientes/${item}`);
             // console.log(`Usuário ${nome} excluído`);
             atualizarLista(); // Props vinda da pagina Listar para atualizar a lista automaticamente
         } catch (error) {

@@ -33,25 +33,56 @@ function ListarPacientes() {
     const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
     const [nomeSelecionado, setNomeSelecionado] = useState(null);    
     const [pacientes, setPacientes] = useState([]);
+    const [open, setOpen] = useState(false);
 
-    // Declarar a variável para receber o número da página
-    const [page, setPage] = useState();
-    // Declarar a variável para receber o número da ultima página
-    const [ultimaPagina, setUltimaPagina] = useState();
+    //variaveis para paginação
+    const [paginaAtual, setPaginaAtual] = useState(1);
+    const [totalPaginas, setTotalPaginas] = useState(1);
+    const [itensPorPagina] = useState(5); // Número de itens por página
+
+    //Armazenar estado de erro
+    const [erro, setErro] = useState("");
 
 
-    const carregarPacientes = async () => {
+
+    const carregarPacientes = async (pagina=1)=>{
         try {
-            const response = await api.get("http://localhost:3001/pacientes");
-            setPacientes(response.data);
+            const response = await api.get(`/pacientes?page=${pagina}&limit=${itensPorPagina}`);
+            console.log("Dados retornados:", response.data); // Verifique aqui
+             // Verificar se o retorno da API é um array ou um objeto
+            if (Array.isArray(response.data)) {
+                setPacientes(response.data); // API retorna diretamente uma lista
+            } else if (Array.isArray(response.data.pacientes)) {
+                setPacientes(response.data.pacientes); // API retorna um objeto com uma lista de médicos
+                setTotalPaginas(Math.ceil(response.data.total / itensPorPagina));
+            } else {
+                console.error("Formato inesperado:", response.data);
+                setPacientes([]);
+            }
         } catch (error) {
-            console.error("Erro ao buscar os dados:", error);
+            console.error("Erro ao carregar médicos:", error);
+            setErro("Erro ao carregar os médicos.");
         }
     };
 
+    // Efeito para carregar os médicos quando a página inicial for montada
     useEffect(() => {
-        carregarPacientes();
-    }, []);
+        carregarPacientes(paginaAtual);
+    }, [paginaAtual]);
+
+    // Função para ir para a página anterior
+    const paginaAnterior = () => {
+        if (paginaAtual > 1) {
+            setPaginaAtual(paginaAtual - 1);
+        }
+    };
+
+    // Função para ir para a próxima página
+    const proximaPagina = () => {
+        if (paginaAtual < totalPaginas) {
+            setPaginaAtual(paginaAtual + 1);
+        }
+    };
     
 
     // Abre modal de exclusão
@@ -82,6 +113,7 @@ function ListarPacientes() {
         setRegistroSelecionado(pacienteId);
         setModalEditarAberto(true);
     }
+   
 
     // Fecha modal de edição
     const fecharModalEditar = ()=>{
@@ -164,6 +196,19 @@ function ListarPacientes() {
                                 </TableBody>
                             </Table>
                         </TableContainer>
+                        {/* Navegação de Paginação */}
+                        <div>
+                            <button onClick={paginaAnterior} disabled={paginaAtual === 1}>
+                                ⬅️ Anterior
+                            </button>
+                            <span>
+                                Página {paginaAtual} de {totalPaginas}
+                            </span>
+                            <button onClick={proximaPagina} disabled={paginaAtual === totalPaginas}>
+                                Próxima ➡️
+                            </button>
+                        </div>
+                        
                     </Box>
                 </div>
 

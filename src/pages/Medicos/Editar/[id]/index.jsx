@@ -35,7 +35,7 @@ useEffect(() => {
 const getMedicos = async (id)=>{
     //console.log(id)
     try {
-        const response = await api.get(`http://localhost:3001/medicos/${id}`);
+        const response = await api.get(`/medicos/${id}`);
         console.log(response)
         const { nome, login, especialidade, crm } = response.data;
         setMedico({ nome, login, especialidade, crm }); // Não incluir a senha aqui          
